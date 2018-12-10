@@ -10,7 +10,7 @@ shinyUI(navbarPage(
   tabPanel("Home"),
   tabPanel("Consequence Table", 
            consequence_ui(("app"))), 
-  tabPanel("Chinook"), 
+  tabPanel("Chinook", chinook_ui("app")), 
   tabPanel("Smelt"), 
   tabPanel("Help")
 ))

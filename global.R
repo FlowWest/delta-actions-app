@@ -2,6 +2,8 @@ library(tidyverse)
 library(shiny)
 library(shinyWidgets)
 library(plotly)
+library(leaflet)
+library(rgdal)
 
 scenario_choices <- c(
   "May-Aug outflow X2 actions:  X2 at 74, 81 km through May-Aug,  keep at 74 May-June then 81 Jul-Aug" = "1",
@@ -25,10 +27,26 @@ consequence_choices <- c(
   "Chinook Salmon"
 )
 
+chinook_regions <- readOGR(dsn="data/Regions1to7/") %>% 
+  spTransform(CRS("+proj=longlat +datum=WGS84 +no_defs"))
+
+chinook_regions$Id <- factor(c(7, 4, 3, 5, 6, 2, 1),
+                             levels = c(7, 4, 3, 5, 6, 2, 1),
+                             labels = c("region 7", 
+                                        "region 4", 
+                                        "region 3", 
+                                        "region 5", 
+                                        "region 6", 
+                                        "region 2", 
+                                        "region 1"))
+
+
+
 # need to unsource this when I have the chinook-routing visualization
-# source("chinook-routing.R")
+source("chinook-routing.R")
 
 source("modules/consequence.R")
+source("modules/chinook.R")
 
 
 water_avail_model_results <- read_rds("data/delta-model-results.rds")
