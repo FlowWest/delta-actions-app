@@ -25,7 +25,11 @@ chinook_ui <- function(id) {
     mainPanel(
       width = 9,
       leafletOutput(ns("chinook_routing_map")),
-      plotlyOutput(ns("chinook_routing_plot"))
+      tabsetPanel(
+        type = "pills",
+        tabPanel("Plot", plotlyOutput(ns("chinook_routing_plot"))),
+        tabPanel("Data", tableOutput(ns("chinook_routing_table")))
+      )
     )
   )
 }
@@ -33,6 +37,7 @@ chinook_ui <- function(id) {
 chinook_server <- function(input, output, session) {
   
   cmap <- colorFactor("Dark2", domain = chinook_regions$Id)
+  chinook_routing_pal <- colorNumeric("Spectral", c(0, 1000))
   
   chinook_routing <- reactiveVal(NULL)
   chinook_routing_locations_selected <- reactiveValues(data=NULL)
@@ -87,20 +92,29 @@ chinook_server <- function(input, output, session) {
                   weight = 2, 
                   fillOpacity = .5, 
                   color=~cmap(Id), 
-                  label=~Id) %>% 
+                  popup=~paste0("<b>", Id, "</b>")) %>% 
       addCircleMarkers(data=chinook_routing_points, label=~paste(location), 
                        weight=1, fillOpacity = .5, layerId = ~location_id) %>% 
-      addLegend("bottomright",pal=cmap, values=~Id)
+      addLegend("bottomright",pal=chinook_routing_pal, values=~values)
     
   })
   
   output$chinook_routing_plot <- renderPlotly({
+    
     validate(
-      need(!is.null(chinook_routing()), "First set parameters and run, then select a point to view Chinook counts")
+      need(!is.null(chinook_routing()),
+           "First set parameters and run, then select a point to view Chinook counts")
     )
     
-    chinook_routing_locations_selected$data %>% 
+    chinook_routing_run() %>% 
       plot_ly(x=~location, y=~value, type='bar')
+    
+  })
+  
+  output$chinook_routing_table <- renderTable({
+    chinook_routing_run() %>% 
+      select(value, location) %>% 
+      spread(location, value)
   })
   
 }
