@@ -164,10 +164,22 @@ DeltaS<-function(DCC_open,hor_barr,bio_fence,Q_free,Q_vern,
   SWP.salv<-round(at.HOR.OR*S_d*psi_SWP*S_SWP)[siz.grp]
   to.ORN <- round(at.HOR.OR*S_d*psi_ORN)[siz.grp]
   
-  c(Free.to.Chps=Free.to.Chps,Sut.in.Sut=Sut.in.Sut,Sut.in.Sac=Sut.in.Sac,
-    Junc.in.DCC=Junc.in.DCC,Junc.in.GeoSlo=Junc.in.GeoSlo,Junc.in.Sac=Junc.in.Sac,
-    at.HOR.SJR=at.HOR.SJR,at.HOR.OR=at.HOR.OR,at.TC.SJR=at.TC.SJR, at.TC.TC=at.TC.TC,
-    CVP.salv=CVP.salv,SWP.salv=SWP.salv,to.ORN=to.ORN,Vern.to.Chps=Vern.to.Chps)
+  c(
+    Free.to.Chps=Free.to.Chps,
+    Sut.in.Sut=Sut.in.Sut,
+    Sut.in.Sac=Sut.in.Sac,
+    Junc.in.DCC=Junc.in.DCC,
+    Junc.in.GeoSlo=Junc.in.GeoSlo,
+    Junc.in.Sac=Junc.in.Sac,
+    at.HOR.SJR=at.HOR.SJR,
+    at.HOR.OR=at.HOR.OR,
+    at.TC.SJR=at.TC.SJR, 
+    at.TC.TC=at.TC.TC,
+    CVP.salv=CVP.salv,
+    SWP.salv=SWP.salv,
+    to.ORN=to.ORN,
+    Vern.to.Chps=Vern.to.Chps
+    )
 }
 
 DCC_open<-1

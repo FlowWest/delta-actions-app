@@ -27,20 +27,37 @@ consequence_choices <- c(
   "Chinook Salmon"
 )
 
+delta_regions <- readOGR(dsn="data/Hydro_Delta_FromBen/hydro_CH2MHill_DP2013_merged_dslv_Delta_clp.shp")%>% 
+  spTransform(CRS("+proj=longlat +datum=WGS84 +no_defs"))
+
 chinook_regions <- readOGR(dsn="data/Regions1to7/") %>% 
   spTransform(CRS("+proj=longlat +datum=WGS84 +no_defs"))
 
 chinook_regions$Id <- factor(c(7, 4, 3, 5, 6, 2, 1),
                              levels = c(7, 4, 3, 5, 6, 2, 1),
-                             labels = c("region 7", 
-                                        "region 4", 
-                                        "region 3", 
-                                        "region 5", 
-                                        "region 6", 
-                                        "region 2", 
-                                        "region 1"))
+                             labels = c("Region 7", 
+                                        "Region 4", 
+                                        "Region 3", 
+                                        "Region 5", 
+                                        "Region 6", 
+                                        "Region 2", 
+                                        "Region 1"))
 
 
+chinook_routing_points <- tribble(
+  ~"lat", ~"lng", ~"location", ~"location_id",
+  38.299283, -121.568740, "Sutter in Sacramento", "Sut.in.Sac",
+  38.297067, -121.581534, "Sutter in Sutter", "Sut.in.Sut",
+  38.244747, -121.503007, "Delta Cross Channel", "Junc.in.DCC",
+  38.129588, -121.576870, "Georgiana Slough", "Junc.in.GeoSlo",
+  37.988258, -121.463450, "Turner Cut Junction at Turner Cut", "at.TC.TC",
+  37.994007, -121.431010, "Turner Cut Junction at San Joaquin River", "at.TC.SJR",
+  37.817428, -121.341816, "Old River", "at.HOR.OR",
+  37.816058, -121.316736, "San Joaquin", "at.HOR.SJR",
+  37.821924, -121.599001, "SWP Salvage", "SWP.salv",
+  37.827697, -121.566748, "CVP Salvage", "CVP.salv",
+  37.880766, -121.575137, "Old River North", "to.ORN"
+)
 
 # need to unsource this when I have the chinook-routing visualization
 source("chinook-routing.R")
