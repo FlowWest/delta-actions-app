@@ -86,7 +86,8 @@ chinook_server <- function(input, output, session) {
   
   output$chinook_routing_map <- renderLeaflet({
     leaflet(chinook_regions) %>% 
-      addProviderTiles(provider = providers$Esri.NatGeoWorldMap) %>% 
+      addProviderTiles(provider = providers$Esri.WorldTopoMap, group="Topo") %>%
+      addProviderTiles(provider = providers$Esri.WorldImagery, group = "Imagery") %>% 
       addPolygons(
                   weight = 2, 
                   fillOpacity = .5, 
@@ -97,6 +98,7 @@ chinook_server <- function(input, output, session) {
                        group = "Routing Points", color="#3a3a3a", fillColor = "#008cba") %>% 
       # addLegend("bottomright",pal=cmap, values=~Id)
       addLayersControl(
+        baseGroups = c("Topo", "Imagery"),
         overlayGroups = c("Chinook Regions")
       )
     
