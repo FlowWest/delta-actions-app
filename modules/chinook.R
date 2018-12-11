@@ -43,6 +43,13 @@ chinook_ui <- function(id) {
 
 chinook_server <- function(input, output, session) {
   
+  # there is a linear correlation between the two
+  observeEvent(input$q_vern, {
+    updateNumericInput(session, "q_stck", 
+                       max = (-4.155134 + 0.429387 * input$q_vern)*1.3,
+                       min = (-4.155134 + 0.429387 * input$q_vern)*0.7)
+  })
+  
   cmap <- colorFactor("Dark2", domain = chinook_regions$Id)
   
   chinook_routing <- reactiveVal(NULL)
@@ -99,11 +106,14 @@ chinook_server <- function(input, output, session) {
   
   
   observeEvent(input$chinook_routing_map_marker_click, {
-    if (is.null(chinook_routing_locations_selected$data))
+    cat(unlist(input$chinook_routing_map_marker_click))
+    if (is.null(chinook_routing_locations_selected$data)) {
+      cat("in the case when chinook routing is null")
       chinook_routing_locations_selected$data <- input$chinook_routing_map_marker_click$id
-    else if (input$chinook_routing_map_marker_click$id %in% chinook_routing_locations_selected$data)
-      return()
-    else 
+    } else if ((input$chinook_routing_map_marker_click$id %in% chinook_routing_locations_selected$data)) {
+      cat("in the case when the marker is in the list of selected already")
+      chinook_routing_locations_selected$data
+    } else 
       chinook_routing_locations_selected$data <- 
         append(chinook_routing_locations_selected$data, 
                input$chinook_routing_map_marker_click$id)
@@ -115,6 +125,8 @@ chinook_server <- function(input, output, session) {
       filter(loc_id %in% chinook_routing_locations_selected$data)
     
   })
+  
+  
   
   output$chinook_routing_map <- renderLeaflet({
     leaflet(chinook_regions) %>% 
