@@ -37,7 +37,6 @@ chinook_ui <- function(id) {
 chinook_server <- function(input, output, session) {
   
   cmap <- colorFactor("Dark2", domain = chinook_regions$Id)
-  chinook_routing_pal <- colorNumeric("Spectral", c(0, 1000))
   
   chinook_routing <- reactiveVal(NULL)
   chinook_routing_locations_selected <- reactiveValues(data=NULL)
@@ -87,15 +86,19 @@ chinook_server <- function(input, output, session) {
   
   output$chinook_routing_map <- renderLeaflet({
     leaflet(chinook_regions) %>% 
-      addTiles() %>% 
+      addProviderTiles(provider = providers$Esri.NatGeoWorldMap) %>% 
       addPolygons(
                   weight = 2, 
                   fillOpacity = .5, 
                   color=~cmap(Id), 
-                  popup=~paste0("<b>", Id, "</b>")) %>% 
+                  popup=~paste0("<b>", Id, "</b>"), group = "Chinook Regions") %>% 
       addCircleMarkers(data=chinook_routing_points, label=~paste(location), 
-                       weight=1, fillOpacity = .5, layerId = ~location_id) %>% 
-      addLegend("bottomright",pal=chinook_routing_pal, values=~values)
+                       weight=1, fillOpacity = .8, layerId = ~location_id, 
+                       group = "Routing Points", color="#3a3a3a", fillColor = "#008cba") %>% 
+      # addLegend("bottomright",pal=cmap, values=~Id)
+      addLayersControl(
+        overlayGroups = c("Chinook Regions")
+      )
     
   })
   
@@ -107,7 +110,7 @@ chinook_server <- function(input, output, session) {
     )
     
     chinook_routing_run() %>% 
-      plot_ly(x=~location, y=~value, type='bar')
+      plot_ly(x=~location, y=~value, type='bar', marker=list(color="#008cba"))
     
   })
   
