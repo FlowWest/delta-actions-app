@@ -108,6 +108,9 @@ chinook_server <- function(input, output, session) {
       need(!is.null(chinook_routing()),
            "First set parameters and run, then select a point to view Chinook counts")
     )
+    validate(
+      need(nrow(chinook_routing_run()) > 0, "Select at least one point from the map")
+    )
     
     chinook_routing_run() %>% 
       plot_ly(x=~location, y=~value, type='bar', marker=list(color="#008cba"))
@@ -120,4 +123,27 @@ chinook_server <- function(input, output, session) {
       spread(location, value)
   })
   
+  observeEvent(input$chinook_routing_map_click, {
+    leafletProxy("chinook_routing_map", data=chinook_routing_run()) %>% 
+      clearGroup("selected_points") %>% 
+      addCircleMarkers(color="red", fillColor = "red", group="selected_points")
+  })
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
