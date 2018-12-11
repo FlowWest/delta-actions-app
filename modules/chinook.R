@@ -27,7 +27,7 @@ chinook_ui <- function(id) {
       numericInput(ns("swp_exp"), "SWP average daily exports (cms)", 
                    value = 10, min = 5.2, max = 235.7),
       numericInput(ns("fl"), "Fork length (mm)", value = 10),
-      actionButton(ns("run_routing"), "run routing", class="btn-primary")
+      actionButton(ns("clear_selected_routing_points"), "clear points", class="btn-primary")
     ), 
     mainPanel(
       width = 9,
@@ -48,6 +48,13 @@ chinook_server <- function(input, output, session) {
     updateNumericInput(session, "q_stck", 
                        max = (-4.155134 + 0.429387 * input$q_vern)*1.3,
                        min = (-4.155134 + 0.429387 * input$q_vern)*0.7)
+  })
+  
+  observeEvent(input$clear_selected_routing_points, {
+    chinook_routing_locations_selected$data <- NULL
+    
+    leafletProxy("chinook_routing_map") %>% 
+      clearGroup("selected_points")
   })
   
   cmap <- colorFactor("Dark2", domain = chinook_regions$Id)
@@ -135,7 +142,6 @@ chinook_server <- function(input, output, session) {
       addPolygons(
         weight = 2, 
         fillOpacity = .5, 
-        # color=~cmap(Id),
         fillColor = "#8c8c8c", 
         color="#8c8c8c",
         popup=~paste0("<b>", Id, "</b>"), 
@@ -143,7 +149,6 @@ chinook_server <- function(input, output, session) {
       addCircleMarkers(data=chinook_routing_points, label=~paste(location), 
                        weight=1, fillOpacity = .8, layerId = ~location_id, 
                        group = "Routing Points", color="#3a3a3a", fillColor = "#008cba") %>% 
-      # addLegend("bottomright",pal=cmap, values=~Id)
       addLayersControl(
         baseGroups = c("Topo", "Imagery"),
         overlayGroups = c("Chinook Regions")
@@ -157,9 +162,7 @@ chinook_server <- function(input, output, session) {
       need(!is.null(chinook_routing_locations_selected$data),
            "First set parameters and run, then select a point to view Chinook counts")
     )
-    # validate(
-    #   need(nrow(chinook_routing_run()) > 0, "Select at least one point from the map")
-    # )
+    
     
     chinook_routing_run() %>% 
       plot_ly(x=~location, y=~value, type='bar', marker=list(color="#008cba")) %>% 
