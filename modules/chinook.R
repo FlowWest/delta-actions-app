@@ -12,13 +12,20 @@ chinook_ui <- function(id) {
                    choices = c("barrier in place"=1, "no barrier"=0), inline=TRUE),
       radioButtons(ns("bio_fence"), "Bioacoustic fence at Sutter/Steamboar", 
                    choices = c("fence in place"=1, "no fence"=0), inline = TRUE),
-      numericInput(ns("q_free"), "Freeport average daily discharge (cms)", 10),
-      numericInput(ns("q_vern"), "Vernalis average daily discharge (cms)", 10),
-      numericInput(ns("q_stck"), "Stockton average daily discharge (cms)", 10),
-      numericInput(ns("temp_vern"), "Vernalis average daily temperature (C)", 10),
-      numericInput(ns("temp_pp"), "SJR at Prisoner's Point average daily temperature (C)", 10),
-      numericInput(ns("cvp_exp"), "CVP average daily exports (cms)", 10),
-      numericInput(ns("swp_exp"), "SWP average daily exports (cms)", 10),
+      numericInput(ns("q_free"), "Freeport average daily discharge (cms, 150 < x < 2400)", 150, 
+                   min = 150, max = 2400),
+      numericInput(ns("q_vern"), "Vernalis average daily discharge (cms, 13.6 < x < 807)", 14, 
+                   min = 13.6, max = 807),
+      numericInput(ns("q_stck"), "Stockton average daily discharge (cms, -8.9 < x < 325.6)", 0, 
+                   min = -8.9, max = 325.6),
+      numericInput(ns("temp_vern"), "Vernalis average daily temperature (C°, 8.2 < x < 21.8)", 10, 
+                   min = 8.2, max = 21.8),
+      numericInput(ns("temp_pp"), "SJR at Prisoner's Point average daily temperature (C°, 7.8 < x < 20.8)", 10, 
+                   min = 7.8, max = 20.8),
+      numericInput(ns("cvp_exp"), "CVP average daily exports (cms)", 10, 
+                   min = 6.1, max = 120),
+      numericInput(ns("swp_exp"), "SWP average daily exports (cms)", 10, 
+                   min = 5.2, max = 235.7),
       numericInput(ns("fl"), "Fork length (mm)", 10),
       actionButton(ns("run_routing"), "run routing", class="btn-primary")
     ), 
@@ -41,9 +48,8 @@ chinook_server <- function(input, output, session) {
   chinook_routing <- reactiveVal(NULL)
   chinook_routing_locations_selected <- reactiveValues(data=NULL)
   
-  observeEvent(input$run_routing, {
-    
-    x <- DeltaS(
+  chinook_routing_output <- reactive({
+    DeltaS(
       as.numeric(input$dcc_open),
       as.numeric(input$hor_barr),
       as.numeric(input$bio_fence),
@@ -57,13 +63,39 @@ chinook_server <- function(input, output, session) {
       1000, 
       1000,
       input$fl)
+  })
+  
+  chinook_routing_df <- reactive({
     
-    d <- data.frame(loc_id = names(x), value=x, row.names = NULL) %>% 
+    data.frame(loc_id = names(chinook_routing_output()), 
+               value = chinook_routing_output(), row.names = NULL) %>% 
       left_join(chinook_routing_points, by=c("loc_id"="location_id"))
     
-    
-    chinook_routing(d)
   })
+  
+  # observeEvent(input$run_routing, {
+  #   
+  #   x <- DeltaS(
+  #     as.numeric(input$dcc_open),
+  #     as.numeric(input$hor_barr),
+  #     as.numeric(input$bio_fence),
+  #     input$q_free,
+  #     input$q_vern, 
+  #     input$q_stck,
+  #     input$temp_vern,
+  #     input$temp_pp,
+  #     input$cvp_exp,
+  #     input$swp_exp,
+  #     1000, 
+  #     1000,
+  #     input$fl)
+  #   
+  #   d <- data.frame(loc_id = names(x), value=x, row.names = NULL) %>% 
+  #     left_join(chinook_routing_points, by=c("loc_id"="location_id"))
+  #   
+  #   
+  #   chinook_routing(d)
+  # })
   
   
   observeEvent(input$chinook_routing_map_marker_click, {
@@ -78,10 +110,10 @@ chinook_server <- function(input, output, session) {
   })
   
   chinook_routing_run <- reactive({
-    req(chinook_routing())
     
-    chinook_routing() %>% 
+    chinook_routing_df() %>% 
       filter(loc_id %in% chinook_routing_locations_selected$data)
+    
   })
   
   output$chinook_routing_map <- renderLeaflet({
@@ -89,10 +121,13 @@ chinook_server <- function(input, output, session) {
       addProviderTiles(provider = providers$Esri.WorldTopoMap, group="Topo") %>%
       addProviderTiles(provider = providers$Esri.WorldImagery, group = "Imagery") %>% 
       addPolygons(
-                  weight = 2, 
-                  fillOpacity = .5, 
-                  color=~cmap(Id), 
-                  popup=~paste0("<b>", Id, "</b>"), group = "Chinook Regions") %>% 
+        weight = 2, 
+        fillOpacity = .5, 
+        # color=~cmap(Id),
+        fillColor = "#8c8c8c", 
+        color="#8c8c8c",
+        popup=~paste0("<b>", Id, "</b>"), 
+        group = "Chinook Regions") %>% 
       addCircleMarkers(data=chinook_routing_points, label=~paste(location), 
                        weight=1, fillOpacity = .8, layerId = ~location_id, 
                        group = "Routing Points", color="#3a3a3a", fillColor = "#008cba") %>% 
@@ -107,15 +142,16 @@ chinook_server <- function(input, output, session) {
   output$chinook_routing_plot <- renderPlotly({
     
     validate(
-      need(!is.null(chinook_routing()),
+      need(!is.null(chinook_routing_locations_selected$data),
            "First set parameters and run, then select a point to view Chinook counts")
     )
-    validate(
-      need(nrow(chinook_routing_run()) > 0, "Select at least one point from the map")
-    )
+    # validate(
+    #   need(nrow(chinook_routing_run()) > 0, "Select at least one point from the map")
+    # )
     
     chinook_routing_run() %>% 
-      plot_ly(x=~location, y=~value, type='bar', marker=list(color="#008cba"))
+      plot_ly(x=~location, y=~value, type='bar', marker=list(color="#008cba")) %>% 
+      layout(xaxis = list(title=""))
     
   })
   
@@ -128,7 +164,7 @@ chinook_server <- function(input, output, session) {
   observeEvent(input$chinook_routing_map_click, {
     leafletProxy("chinook_routing_map", data=chinook_routing_run()) %>% 
       clearGroup("selected_points") %>% 
-      addCircleMarkers(color="red", fillColor = "red", group="selected_points")
+      addCircleMarkers(color="red", fillColor = "#c65151", group="selected_points")
   })
   
 }

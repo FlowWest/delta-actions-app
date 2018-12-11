@@ -6,3 +6,7 @@
 .show-details {
     margin-bottom: 5px;
 }
+
+.shiny-output-error-validation {
+    color: #3a3a3a;
+}
