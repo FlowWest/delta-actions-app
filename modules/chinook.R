@@ -87,31 +87,6 @@ chinook_server <- function(input, output, session) {
     
   })
   
-  # observeEvent(input$run_routing, {
-  #   
-  #   x <- DeltaS(
-  #     as.numeric(input$dcc_open),
-  #     as.numeric(input$hor_barr),
-  #     as.numeric(input$bio_fence),
-  #     input$q_free,
-  #     input$q_vern, 
-  #     input$q_stck,
-  #     input$temp_vern,
-  #     input$temp_pp,
-  #     input$cvp_exp,
-  #     input$swp_exp,
-  #     1000, 
-  #     1000,
-  #     input$fl)
-  #   
-  #   d <- data.frame(loc_id = names(x), value=x, row.names = NULL) %>% 
-  #     left_join(chinook_routing_points, by=c("loc_id"="location_id"))
-  #   
-  #   
-  #   chinook_routing(d)
-  # })
-  
-  
   observeEvent(input$chinook_routing_map_marker_click, {
     cat(unlist(input$chinook_routing_map_marker_click))
     if (is.null(chinook_routing_locations_selected$data)) {
