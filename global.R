@@ -59,6 +59,9 @@ chinook_routing_points <- tribble(
   37.880766, -121.575137, "Old River North", "to.ORN"
 )
 
+chinook_locs_id_lookup <- chinook_routing_points$location
+names(chinook_locs_id_lookup) <- chinook_routing_points$location_id
+
 # need to unsource this when I have the chinook-routing visualization
 source("chinook-routing.R")
 

@@ -183,6 +183,7 @@ chinook_server <- function(input, output, session) {
       addCircleMarkers(color="red", 
                        fillColor = "#c65151",
                        layerId = ~paste0("map-",loc_id),
+                       label = ~as.character(chinook_locs_id_lookup[loc_id]),
                        group="selected_points")
   })
   
