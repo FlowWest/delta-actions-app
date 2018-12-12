@@ -17,8 +17,17 @@ chinook_ui <- function(id) {
                               choices = c("fence in place"=1, "no fence"=0), inline = TRUE),
                  numericInput(ns("q_free"), "Freeport average daily discharge (cms, 150 < x < 2400)", 
                               value = 150, min = 150, max = 2400),
-                 numericInput(ns("q_vern"), "Vernalis average daily discharge (cms, 13.6 < x < 807)", 
-                              value = 14, min = 13.6, max = 807),
+                 
+                 # these two numeric inputs need addtional context
+                 tags$div(
+                   tags$div(style="display:inline-block", 
+                            numericInput(ns("q_vern"), "Vernalis average daily discharge (cms, 13.6 < x < 807)", 
+                                         value = 14, min = 13.6, max = 807)), 
+                   tags$div(style="display:inline-block", 
+                            actionButton(ns("help_with_q_vern"), label = NULL, 
+                                         icon = icon("question"), 
+                                         class="btn-xs btn-primary routing-help-button"))
+                 ),
                  numericInput(ns("q_stck"), "Stockton average daily discharge (cms, -8.9 < x < 325.6)", 
                               value = 0, min = -8.9, max = 325.6),
                  numericInput(ns("temp_vern"), "Vernalis average daily temperature (C°, 8.2 < x < 21.8)", 
@@ -187,7 +196,15 @@ chinook_server <- function(input, output, session) {
                        labelOptions = labelOptions(noHide = TRUE),
                        group="selected_points")
   })
+
   
+  # Help modals --------------------------------------------------------
+  observeEvent(input$help_with_q_vern, {
+    showModal(modalDialog(
+      title = "Flow at Vernalis", 
+      tagList("test"), easyClose = TRUE
+    ))
+  })
 }
 
 

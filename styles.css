@@ -10,3 +10,7 @@
 .shiny-output-error-validation {
     color: #3a3a3a;
 }
+
+.routing-help-button {
+    border-radius: 20%;
+}
