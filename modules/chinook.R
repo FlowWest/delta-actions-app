@@ -3,31 +3,57 @@ chinook_ui <- function(id) {
   sidebarLayout(
     sidebarPanel(
       width = 3, 
-      tags$h3("Chinook Routing"),
-      helpText("Set each of the parameters below, and select run to 
+      tabsetPanel(
+        type = "pills",
+        tabPanel("Dash", 
+                 tags$h3("Chinook Routing"),
+                 helpText("Set each of the parameters below, and select run to 
            simulate Chinook routing in the delta"),
-      radioButtons(ns("dcc_open"), "Delta Cross Channel Gate", 
-                   choices = c("open"=1, "closed"=0), inline=TRUE),
-      radioButtons(ns("hor_barr"), "Head of Old River", 
-                   choices = c("barrier in place"=1, "no barrier"=0), inline=TRUE),
-      radioButtons(ns("bio_fence"), "Bioacoustic fence at Sutter/Steamboar", 
-                   choices = c("fence in place"=1, "no fence"=0), inline = TRUE),
-      numericInput(ns("q_free"), "Freeport average daily discharge (cms, 150 < x < 2400)", 
-                   value = 150, min = 150, max = 2400),
-      numericInput(ns("q_vern"), "Vernalis average daily discharge (cms, 13.6 < x < 807)", 
-                   value = 14, min = 13.6, max = 807),
-      numericInput(ns("q_stck"), "Stockton average daily discharge (cms, -8.9 < x < 325.6)", 
-                   value = 0, min = -8.9, max = 325.6),
-      numericInput(ns("temp_vern"), "Vernalis average daily temperature (C°, 8.2 < x < 21.8)", 
-                   value = 10, min = 8.2, max = 21.8),
-      numericInput(ns("temp_pp"), "SJR at Prisoner's Point average daily temperature (C°, 7.8 < x < 20.8)", 
-                   value = 10, min = 7.8, max = 20.8),
-      numericInput(ns("cvp_exp"), "CVP average daily exports (cms)", 
-                   value = 10, min = 6.1, max = 120),
-      numericInput(ns("swp_exp"), "SWP average daily exports (cms)", 
-                   value = 10, min = 5.2, max = 235.7),
-      numericInput(ns("fl"), "Fork length (mm)", value = 10),
-      actionButton(ns("clear_selected_routing_points"), "clear points", class="btn-primary")
+                 radioButtons(ns("dcc_open"), "Delta Cross Channel Gate", 
+                              choices = c("open"=1, "closed"=0), inline=TRUE),
+                 radioButtons(ns("hor_barr"), "Head of Old River", 
+                              choices = c("barrier in place"=1, "no barrier"=0), inline=TRUE),
+                 radioButtons(ns("bio_fence"), "Bioacoustic fence at Sutter/Steamboar", 
+                              choices = c("fence in place"=1, "no fence"=0), inline = TRUE),
+                 numericInput(ns("q_free"), "Freeport average daily discharge (cms, 150 < x < 2400)", 
+                              value = 150, min = 150, max = 2400),
+                 numericInput(ns("q_vern"), "Vernalis average daily discharge (cms, 13.6 < x < 807)", 
+                              value = 14, min = 13.6, max = 807),
+                 numericInput(ns("q_stck"), "Stockton average daily discharge (cms, -8.9 < x < 325.6)", 
+                              value = 0, min = -8.9, max = 325.6),
+                 numericInput(ns("temp_vern"), "Vernalis average daily temperature (C°, 8.2 < x < 21.8)", 
+                              value = 10, min = 8.2, max = 21.8),
+                 numericInput(ns("temp_pp"), "SJR at Prisoner's Point average daily temperature (C°, 7.8 < x < 20.8)", 
+                              value = 10, min = 7.8, max = 20.8),
+                 numericInput(ns("cvp_exp"), "CVP average daily exports (cms)", 
+                              value = 10, min = 6.1, max = 120),
+                 numericInput(ns("swp_exp"), "SWP average daily exports (cms)", 
+                              value = 10, min = 5.2, max = 235.7),
+                 numericInput(ns("fl"), "Fork length (mm)", value = 10),
+                 actionButton(ns("clear_selected_routing_points"), "clear points", class="btn-primary")), 
+        tabPanel("Help", 
+                 tagList(
+                   tags$br(),
+                   tags$p("The Chinook routing tool allows users to set parameter values at 
+                       different junctions of the Delta. "), 
+                   tags$br(),
+                   tags$h4("How to use"), 
+                   tags$hr(), 
+                   tags$p("The interface to the tool is simple and requires minimal set up 
+                        to use."),
+                   tags$p("You can start by selecting junctions of interest from the map.
+                          Upon selecting the first one, you will notice a bar plot start
+                          to appear below the map. Each bar corresponds to a point selected."),
+                   tags$p("Once a set of desired points have been selected, you can start
+                          changing parameters. This will modify the results for Chinook routing and
+                          the plot will reflect this."),
+                   tags$p("You can clear all the points on the map using the 'clear points'
+                          button. You can also remove only a particular point by
+                          selecting it again.")
+                   
+                 )
+        )
+      )
     ), 
     mainPanel(
       width = 9,
@@ -135,7 +161,7 @@ chinook_server <- function(input, output, session) {
     
     validate(
       need(!is.null(chinook_routing_locations_selected$data),
-           "First set parameters and run, then select a point to view Chinook counts")
+           "Select more than one point of interest from the map above to view a plot here")
     )
     
     
@@ -154,7 +180,10 @@ chinook_server <- function(input, output, session) {
   observeEvent(input$chinook_routing_map_click, {
     leafletProxy("chinook_routing_map", data=chinook_routing_run()) %>% 
       clearGroup("selected_points") %>% 
-      addCircleMarkers(color="red", fillColor = "#c65151", group="selected_points")
+      addCircleMarkers(color="red", 
+                       fillColor = "#c65151",
+                       layerId = ~paste0("map-",loc_id),
+                       group="selected_points")
   })
   
 }
