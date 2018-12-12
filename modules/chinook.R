@@ -59,7 +59,6 @@ chinook_ui <- function(id) {
                    tags$p("You can clear all the points on the map using the 'clear points'
                           button. You can also remove only a particular point by
                           selecting it again.")
-                   
                  )
         )
       )
@@ -143,8 +142,6 @@ chinook_server <- function(input, output, session) {
     
   })
   
-  
-  
   output$chinook_routing_map <- renderLeaflet({
     leaflet(chinook_regions) %>% 
       addProviderTiles(provider = providers$Esri.WorldTopoMap, group="Topo") %>%
@@ -173,7 +170,6 @@ chinook_server <- function(input, output, session) {
            "Select more than one point of interest from the map above to view a plot here")
     )
     
-    
     chinook_routing_run() %>% 
       plot_ly(x=~location, y=~value, type='bar', marker=list(color="#008cba")) %>% 
       layout(xaxis = list(title=""))
@@ -196,7 +192,6 @@ chinook_server <- function(input, output, session) {
                        labelOptions = labelOptions(noHide = TRUE),
                        group="selected_points")
   })
-
   
   # Help modals --------------------------------------------------------
   observeEvent(input$help_with_q_vern, {
@@ -206,20 +201,4 @@ chinook_server <- function(input, output, session) {
     ))
   })
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

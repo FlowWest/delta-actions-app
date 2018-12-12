@@ -66,8 +66,8 @@ names(chinook_locs_id_lookup) <- chinook_routing_points$location_id
 source("chinook-routing.R")
 
 source("modules/consequence.R")
+source("modules/home.R")
 source("modules/chinook.R")
-
 
 water_avail_model_results <- read_rds("data/delta-model-results.rds")
 
@@ -76,4 +76,3 @@ sod_exports <- water_avail_model_results %>%
 
 nod_exports <- water_avail_model_results %>% 
   filter(node_name %in% c("SWP NOD", "CVP NOD"))
-

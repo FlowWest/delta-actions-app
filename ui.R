@@ -7,10 +7,10 @@ shinyUI(navbarPage(
   includeCSS("styles.css")),
   theme = shinythemes::shinytheme("yeti"),
   # shinythemes::themeSelector(),
-  tabPanel("Home"),
+  tabPanel("Home", home_ui("app")),
   tabPanel("Consequence Table", 
            consequence_ui(("app"))), 
-  tabPanel("Chinook", chinook_ui("app")), 
+  tabPanel("Chinook Routing", chinook_ui("app")), 
   tabPanel("Smelt"), 
   tabPanel("Help")
 ))
