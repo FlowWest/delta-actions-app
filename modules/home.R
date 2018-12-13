@@ -25,7 +25,11 @@ home_ui <- function(id) {
     tags$div(class="col-md-4", 
              tags$h4("Smelt Routing"), 
              tags$hr(), 
-             tags$p("Coming Soon"))
+             tags$p("Coming Soon")),
+    tags$div(class="col-md-12",
+             tags$hr(),
+             helpText("To view source code for this application, as well 
+                      as all the tools", tags$a(href="#", "here")))
   )
 }
 
