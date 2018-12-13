@@ -46,17 +46,20 @@ chinook_regions$Id <- factor(c(7, 4, 3, 5, 6, 2, 1),
 
 chinook_routing_points <- tribble(
   ~"lat", ~"lng", ~"location", ~"location_id",
-  38.299283, -121.568740, "Sutter in Sacramento", "Sut.in.Sac",
-  38.297067, -121.581534, "Sutter in Sutter", "Sut.in.Sut",
-  38.244747, -121.503007, "Delta Cross Channel", "Junc.in.DCC",
-  38.129588, -121.576870, "Georgiana Slough", "Junc.in.GeoSlo",
-  37.988258, -121.463450, "Turner Cut Junction at Turner Cut", "at.TC.TC",
-  37.994007, -121.431010, "Turner Cut Junction at San Joaquin River", "at.TC.SJR",
-  37.817428, -121.341816, "Old River", "at.HOR.OR",
-  37.816058, -121.316736, "San Joaquin", "at.HOR.SJR",
+  38.309739, -121.576109, "Sutter in Sacramento", "Sut.in.Sac",
+  38.304908, -121.599392, "Sutter in Sutter", "Sut.in.Sut",
+  38.244720, -121.503385, "Junction in Delta Cross Channel", "Junc.in.DCC",
+  38.232174, -121.521133, "Junction in Georgiana Slough", "Junc.in.GeoSlo",
+  38.254235, -121.513459, "Junction in Sacramento River", "Junc.in.Sac",
+  37.990010, -121.458557, "Turner Cut at Turner Cut Junction", "at.TC.TC",
+  38.003133, -121.450741, "San Joaquin River at Turner Cut Junction", "at.TC.SJR",
+  37.807879, -121.331900, "Old River at HOD", "at.HOR.OR",
+  37.811096, -121.320068, "San Joaquin at HOD", "at.HOR.SJR",
   37.821924, -121.599001, "SWP Salvage", "SWP.salv",
   37.827697, -121.566748, "CVP Salvage", "CVP.salv",
-  37.880766, -121.575137, "Old River North", "to.ORN"
+  37.880766, -121.575137, "Old River North", "to.ORN", 
+  38.055121, -121.927622, "Vernalis to Chipps", "Vern.to.Chps", 
+  38.055043, -121.898327, "Freeport to Chipps", "Free.to.Chps"
 )
 
 chinook_locs_id_lookup <- chinook_routing_points$location

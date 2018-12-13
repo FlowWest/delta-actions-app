@@ -7,8 +7,8 @@ chinook_ui <- function(id) {
         type = "pills",
         tabPanel("Dash", 
                  tags$h3("Chinook Routing"),
-                 helpText("Set each of the parameters below, and select run to 
-           simulate Chinook routing in the delta"),
+                 helpText("Set each of the parameters below, and select junctions 
+                          of interest from the map"),
                  radioButtons(ns("dcc_open"), "Delta Cross Channel Gate", 
                               choices = c("open"=1, "closed"=0), inline=TRUE),
                  radioButtons(ns("hor_barr"), "Head of Old River", 
@@ -197,7 +197,11 @@ chinook_server <- function(input, output, session) {
   observeEvent(input$help_with_q_vern, {
     showModal(modalDialog(
       title = "Flow at Vernalis", 
-      tagList("test"), easyClose = TRUE
+      tagList(
+        tags$p("Flow at Vernallis is correlated with flow at Stockton. 
+              The application will change the allowed values based on 
+              a quantified version of this correlation.")), 
+      easyClose = TRUE
     ))
   })
 }
