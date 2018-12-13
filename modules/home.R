@@ -15,8 +15,9 @@ home_ui <- function(id) {
              tags$hr(), 
              tags$p("This tool allows users to visualize Chinook routing in the Delta.
                     Users can insert custom values for key components of routing in 
-                    Delta, and easily evaluate tradeoffs for each."), 
-             actionButton(ns("goto_chinook_routing"), "View tool")),
+                    the Delta and easily evaluate tradeoffs for each."), 
+             actionButton(ns("goto_chinook_routing"), "View tool", 
+                          class="btn-success")),
     tags$div(class="col-md-4", 
              tags$h4("Consequence Table"), 
              tags$hr(), 
@@ -28,7 +29,9 @@ home_ui <- function(id) {
   )
 }
 
-home_server <- function(input, output, session) {
-  
+home_server <- function(input, output, session, x) {
+  observeEvent(input$goto_chinook_routing, {
+    updateNavbarPage(session = x, inputId = "deltaapp", selected = "chinook_routing")
+  })
 }
 
