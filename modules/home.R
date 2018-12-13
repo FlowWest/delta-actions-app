@@ -13,7 +13,10 @@ home_ui <- function(id) {
     tags$div(class="col-md-4", 
              tags$h4("Chinook Routing Tool"), 
              tags$hr(), 
-             tags$p("This tool allows users to")),
+             tags$p("This tool allows users to visualize Chinook routing in the Delta.
+                    Users can insert custom values for key components of routing in 
+                    Delta, and easily evaluate tradeoffs for each."), 
+             actionButton(ns("goto_chinook_routing"), "View tool")),
     tags$div(class="col-md-4", 
              tags$h4("Consequence Table"), 
              tags$hr(), 
