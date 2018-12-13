@@ -28,8 +28,15 @@ chinook_ui <- function(id) {
                                          icon = icon("question"), 
                                          class="btn-xs btn-primary routing-help-button"))
                  ),
-                 numericInput(ns("q_stck"), "Stockton average daily discharge (cms, -8.9 < x < 325.6)", 
-                              value = 0, min = -8.9, max = 325.6),
+                 tags$div(
+                   tags$div(style="display:inline-block", 
+                            numericInput(ns("q_stck"), "Stockton average daily discharge (cms)", 
+                                         value = 0, min = -8.9, max = 325.6)), 
+                   tags$div(style="display:inline-block", 
+                            actionButton(ns("help_with_q_stck"), label = NULL, 
+                                         icon = icon("question"), 
+                                         class="btn-xs btn-primary routing-help-button"))
+                 ),
                  numericInput(ns("temp_vern"), "Vernalis average daily temperature (C°, 8.2 < x < 21.8)", 
                               value = 10, min = 8.2, max = 21.8),
                  numericInput(ns("temp_pp"), "SJR at Prisoner's Point average daily temperature (C°, 7.8 < x < 20.8)", 
@@ -82,6 +89,12 @@ chinook_server <- function(input, output, session) {
     updateNumericInput(session, "q_stck", 
                        max = (-4.155134 + 0.429387 * input$q_vern)*1.3,
                        min = (-4.155134 + 0.429387 * input$q_vern)*0.7)
+  })
+  
+  observeEvent(input$temp_vern, {
+    updateNumericInput(session, "temp_pp", 
+                       max = (0.91483 + 0.88525 * input$temp_vern)*1.2, 
+                       min = (0.91483 + 0.88525 * input$temp_vern)*0.8)
   })
   
   observeEvent(input$clear_selected_routing_points, {
