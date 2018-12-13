@@ -182,22 +182,22 @@ DeltaS<-function(DCC_open,hor_barr,bio_fence,Q_free,Q_vern,
     )
 }
 
-DCC_open<-1
-hor_barr<-0
-bio_fence<-0
-Q_free<-700
-CVP_exp<-99
-SWP_exp<- 100
-Q_vern<- 200
-Q_stck<- 10
-Temp_vern<-12
-Temp_pp<-15
-No.fish.abv.Freeport<-No.fish.abv.Vernalis<-10000
-FL = 100
-
-
-DeltaS(DCC_open,hor_barr,bio_fence,Q_free,Q_vern, Q_stck,Temp_vern,Temp_pp,CVP_exp,SWP_exp,
-       No.fish.abv.Freeport, No.fish.abv.Vernalis,FL)
+# DCC_open<-1
+# hor_barr<-0
+# bio_fence<-0
+# Q_free<-700
+# CVP_exp<-99
+# SWP_exp<- 100
+# Q_vern<- 200
+# Q_stck<- 10
+# Temp_vern<-12
+# Temp_pp<-15
+# No.fish.abv.Freeport<-No.fish.abv.Vernalis<-10000
+# FL = 100
+# 
+# 
+# DeltaS(DCC_open,hor_barr,bio_fence,Q_free,Q_vern, Q_stck,Temp_vern,Temp_pp,CVP_exp,SWP_exp,
+#        No.fish.abv.Freeport, No.fish.abv.Vernalis,FL)
 
 
 # translation of output
