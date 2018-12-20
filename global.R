@@ -43,6 +43,12 @@ chinook_regions$Id <- factor(c(7, 4, 3, 5, 6, 2, 1),
                                         "Region 2", 
                                         "Region 1"))
 
+chinook_dropoff_locations <- tribble(
+  ~"location", ~"lat", ~"lng", 
+  "Vernalis", 37.67604, -121.2663, 
+  "Freeport", 38.461045, -121.503570
+)
+
 
 chinook_routing_points <- tribble(
   ~"lat", ~"lng", ~"location", ~"location_id",

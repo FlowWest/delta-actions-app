@@ -4,6 +4,11 @@ consequence_ui <- function(id) {
   sidebarLayout(
     sidebarPanel = sidebarPanel(
       width = 3,
+      HTML('<div class="alert alert-dismissible alert-warning">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h4 class="alert-heading">Hello User!</h4>
+  <p class="mb-0">This application is currently under construction.<a href="#" class="alert-link"></a></p>
+             </div>'),
       htmlTemplate("templates/consequence-template.html", 
                    ui_variable_select_action_x2 =  
                      actionButton(ns("consequence_x2"), 

@@ -9,6 +9,16 @@ chinook_ui <- function(id) {
                  tags$h3("Chinook Routing"),
                  helpText("Set each of the parameters below, and select junctions 
                           of interest from the map"),
+                 tags$div(
+                   tags$div(style="display:inline-block",
+                            numericInput(ns("fish_above_freeport"), "No. of fish above Freeport", 10000, 
+                                         width = "160px")
+                   ),
+                   tags$div(style="display:inline-block",
+                            numericInput(ns("fish_above_vernalis"), "No. of fish above Vernalis", 10000, 
+                                         width = "160px")
+                   )
+                 ),
                  radioButtons(ns("dcc_open"), "Delta Cross Channel Gate", 
                               choices = c("open"=1, "closed"=0), inline=TRUE),
                  radioButtons(ns("hor_barr"), "Head of Old River", 
@@ -121,8 +131,8 @@ chinook_server <- function(input, output, session) {
       input$temp_pp,
       input$cvp_exp,
       input$swp_exp,
-      10000, 
-      10000,
+      input$fish_above_freeport, 
+      input$fish_above_vernalis,
       input$fl)
   })
   
@@ -169,6 +179,9 @@ chinook_server <- function(input, output, session) {
       addCircleMarkers(data=chinook_routing_points, label=~paste(location), 
                        weight=1, fillOpacity = .8, layerId = ~location_id, 
                        group = "Routing Points", color="#3a3a3a", fillColor = "#008cba") %>% 
+      addCircleMarkers(data=chinook_dropoff_locations, 
+                       fillColor = "#ffad33", color="#ffad33", 
+                       fillOpacity = .6, label=~location) %>% 
       addLayersControl(
         baseGroups = c("Topo", "Imagery"),
         overlayGroups = c("Chinook Regions")
@@ -196,6 +209,10 @@ chinook_server <- function(input, output, session) {
   })
   
   observeEvent(input$chinook_routing_map_click, {
+    cat(class(input$chinook_routing_map_click), "\n")
+    cat(unlist(input$chinook_routing_map_click), "\n")
+    if (is.null(input$chinook_routing_map_click$id)) return()
+    
     leafletProxy("chinook_routing_map", data=chinook_routing_run()) %>% 
       clearGroup("selected_points") %>% 
       addCircleMarkers(color="red", 
